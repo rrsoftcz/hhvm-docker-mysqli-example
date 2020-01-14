@@ -26,7 +26,7 @@ async function fetch_user_name(
     $user_id,
   );
   // There shouldn't be more than one row returned for one user id
-  invariant($result->numRows() === 1, sprintf('The user with ID:%s not found.', $user_id));
+  invariant($result->numRows() === 1, 'The user with ID:%s has not found!', $user_id);
   // A vector of vector objects holding the string values of each column
   // in the query
   $vector = $result->vectorRows();
@@ -35,7 +35,7 @@ async function fetch_user_name(
 }
 
 async function get_user_info(
-  \AsyncMysqlConnection $conn,
+  AsyncMysqlConnection $conn,
   string $user,
 ): Awaitable<Vector<Map<string, ?string>>> {
   $result = await $conn->queryf(
@@ -45,13 +45,14 @@ async function get_user_info(
   // A vector of map objects holding the string values of each column
   // in the query, and the keys being the column names
   $map = $result->mapRows();
+  
   return $map;
 }
 
 async function async_mysql_tutorial(): Awaitable<void> {
   $conn = await get_connection();
   if ($conn !== null) {
-      echo "<pre>";
+    echo "<pre>";
     $result = await fetch_user_name($conn, 1);
     var_dump($result);
     $info = await get_user_info($conn, 'Bajtlamer');
